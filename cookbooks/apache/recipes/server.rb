@@ -4,11 +4,12 @@
 #
 # Copyright:: 2021, The Authors, All Rights Reserved.
 package 'apache2' do
-	action :install
+  action :install
 end
 
 template '/var/www/html/index.html' do
   source 'index.html.erb'
+  #  notifies :restart, 'service[apache2]', :immediately
 end
 
 # example of bash resource to create directory and chown to apache
@@ -44,11 +45,11 @@ end
 # when handling directory creation
 
 directory '/var/www/mysites' do
-#	owner 'apache'
-	recursive true
+  #	owner 'apache'
+  recursive true
 end
 
 service 'apache2' do
-	action [:enable,:start]
+  action [:enable, :start]
+  subscribes :restart, 'template[/var/www/html/index.html]', :immediately
 end
-
